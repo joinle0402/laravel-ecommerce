@@ -13,5 +13,6 @@ class Permission extends ModelsPermission
         'name',
         'display_name',
         'group',
+        'guard_name',
     ];
 }
