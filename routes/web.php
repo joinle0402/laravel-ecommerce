@@ -1,14 +1,21 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\RoleController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('admins.layout.app');
+    return to_route('admin.dashboard');
 });
 
-Route::get('/admin', function () {
-    return view('admins.layout.app');
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+
+    Route::resource('roles', RoleController::class);
 });
+
+
 
 Route::get('/client', function () {
     return view('clients.layout.app');
