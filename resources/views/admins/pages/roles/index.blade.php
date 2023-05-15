@@ -55,7 +55,7 @@
                                     @if ($roles)
                                         @foreach ($roles as $index => $role)
                                             <tr>
-                                                <td class="text-bold text-center">{{ $index + 1 }}</td>
+                                                <td class="text-bold text-center">{{ $role->id }}</td>
                                                 <td class="text-center">{{ $role->name }}</td>
                                                 <td class="text-center">{{ $role->display_name }}</td>
                                                 <td class="text-center">{{ $role->group }}</td>
