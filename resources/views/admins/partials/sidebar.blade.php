@@ -30,17 +30,34 @@
                     'active bg-gradient-primary' => request()->routeIs('admin.roles.*'),
                 ]) href="{{ route('admin.roles.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">table_view</i>
+                        <span class="material-icons opacity-10">
+                            supervisor_account
+                        </span>
                     </div>
                     <span class="nav-link-text ms-1">Role</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white " href="./pages/billing.html">
+                <a @class([
+                    'nav-link text-white',
+                    'active bg-gradient-primary' => request()->routeIs('admin.users.*'),
+                ]) href="{{ route('admin.users.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">receipt_long</i>
+                        <span class="material-icons opacity-10">
+                            manage_accounts
+                        </span>
                     </div>
                     <span class="nav-link-text ms-1">User</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white " href="./pages/rtl.html">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <span class="material-icons opacity-10">
+                            format_list_bulleted
+                        </span>
+                    </div>
+                    <span class="nav-link-text ms-1">Category</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -51,14 +68,7 @@
                     <span class="nav-link-text ms-1">Product</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-white " href="./pages/rtl.html">
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">format_textdirection_r_to_l</i>
-                    </div>
-                    <span class="nav-link-text ms-1">Category</span>
-                </a>
-            </li>
+
         </ul>
     </div>
 </aside>
