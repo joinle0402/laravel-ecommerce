@@ -8,15 +8,23 @@
     <div class="card">
         <div class="container bg-white shadow p-3">
             <div class="row">
-                @if (session('message'))
-                    <h4 class="text-success">{{ session('message') }}</h6>
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show text-white text-center" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        {{ session('success') }}
+                        <button type="button" class="btn-close d-flex items-center justify-center" data-bs-dismiss="alert"
+                            aria-label="Close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
                 @endif
 
                 <div class="col-sm">
                     <h2>Role list</h2>
                 </div>
                 <div class="col-sm d-flex justify-content-end">
-                    <a href="{{ route('admin.roles.create') }}" class="btn btn-info active" role="button" aria-pressed="true">
+                    <a href="{{ route('admin.roles.create') }}" class="btn btn-info active" role="button"
+                        aria-pressed="true">
                         Add Role
                     </a>
                 </div>
@@ -55,7 +63,7 @@
                                     @if ($roles)
                                         @foreach ($roles as $index => $role)
                                             <tr>
-                                                <td class="text-bold text-center">{{ $role->id }}</td>
+                                                <td class="text-bold text-center">{{ $index + 1 }}</td>
                                                 <td class="text-center">{{ $role->name }}</td>
                                                 <td class="text-center">{{ $role->display_name }}</td>
                                                 <td class="text-center">{{ $role->group }}</td>
@@ -89,12 +97,27 @@
 @endsection
 
 @section('script')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function confirmDelete(id) {
-            if (confirm('Are you sure you want to delete this role?')) {
-                event.preventDefault();
-                document.getElementById('delete-form-' + id).submit();
-            }
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(`#delete-form-${id}`).submit();
+                    Swal.fire(
+                        'Deleted!',
+                        'Delete successfully!',
+                        'success'
+                    )
+                }
+            })
         }
     </script>
 @endsection

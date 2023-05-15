@@ -8,15 +8,24 @@ use App\Http\Requests\Role\UpdateRoleRequest;
 use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RoleController extends Controller
 {
+    private Role $role;
+    private Permission $permission;
+    public function __construct(Role $role, Permission $permission)
+    {
+        $this->role = $role;
+        $this->permission = $permission;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $roles = Role::paginate(3);
+        $roles = $this->role->latest('id')->paginate(3);
         return view('admins.pages.roles.index', compact('roles'));
     }
 
@@ -25,7 +34,7 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $permissionGroups = Permission::all()->groupBy('group');
+        $permissionGroups = $this->permission->all()->groupBy('group');
         return view('admins.pages.roles.create', compact('permissionGroups'));
     }
 
@@ -34,19 +43,21 @@ class RoleController extends Controller
      */
     public function store(StoreRoleRequest $request)
     {
-        $roleData = [];
-        $roleData['name'] = $request->name;
-        $roleData['display_name'] = $request->display_name;
-        $roleData['group'] = $request->group;
-        $roleData['guard_name'] = 'web';
-
-        $role = Role::create($roleData);
-        if ($request->has('permission_ids'))
-        {
-            $role->permissions()->attach($request->permission_ids);
+        try {
+            DB::beginTransaction();
+            $role = new Role();
+            $role->name = $request->name;
+            $role->display_name = $request->display_name;
+            $role->group = $request->group;
+            $role->guard_name = 'web';
+            $role->save();
+            $role->permissions()->attach($request->permission_ids ?? []);
+            DB::commit();
+            return redirect()->route('admin.roles.index')->with('success', 'Create role successfully!');
+        } catch (\Exception $exception) {
+            DB::rollback();
+            dd($exception);
         }
-
-        return to_route('admin.roles.index')->with(['message' => 'Create role successfully!']);
     }
 
     /**
@@ -62,8 +73,8 @@ class RoleController extends Controller
      */
     public function edit(string $id)
     {
-        $role = Role::findById($id);
-        $permissionGroups = Permission::all()->groupBy('group');
+        $role = $this->role->findById($id);
+        $permissionGroups = $this->permission->all()->groupBy('group');
         $roleHasPermissions = $role->permissions()->pluck('id')->toArray();
 
         return view('admins.pages.roles.edit', compact('role', 'permissionGroups', 'roleHasPermissions'));
@@ -74,15 +85,21 @@ class RoleController extends Controller
      */
     public function update(UpdateRoleRequest $request, string $id)
     {
-        $role = Role::findOrFail($id);
-        $role->name = $request->name;
-        $role->display_name = $request->display_name;
-        $role->group = $request->group;
-        $role->guard_name = 'web';
-        $role->save();
-        $role->permissions()->sync($request->permission_ids);
-
-        return to_route('admin.roles.index')->with(['message' => 'Update role successfully!']);
+        try {
+            DB::beginTransaction();
+            $role = $this->role->findOrFail($id);
+            $role->name = $request->name;
+            $role->display_name = $request->display_name;
+            $role->group = $request->group;
+            $role->guard_name = 'web';
+            $role->save();
+            $role->permissions()->sync($request->permission_ids);
+            DB::commit();
+            return redirect()->route('admin.roles.index')->with('success', 'Update role successfully!');
+        } catch (\Exception $exception) {
+            DB::rollback();
+            dd($exception);
+        }
     }
 
     /**
@@ -90,7 +107,7 @@ class RoleController extends Controller
      */
     public function destroy(string $id)
     {
-        Role::destroy($id);
-        return to_route('admin.roles.index')->with(['message' => 'Delete role successfully!']);
+        $this->role->destroy($id);
+        return redirect()->route('admin.roles.index')->with('success', 'Delete role successfully!');
     }
 }
