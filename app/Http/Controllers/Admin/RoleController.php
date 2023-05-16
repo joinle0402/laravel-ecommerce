@@ -20,27 +20,18 @@ class RoleController extends Controller
         $this->permission = $permission;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $roles = $this->role->latest('id')->paginate(3);
         return view('admins.pages.roles.index', compact('roles'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $permissionGroups = $this->permission->all()->groupBy('group');
         return view('admins.pages.roles.create', compact('permissionGroups'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreRoleRequest $request)
     {
         try {
@@ -60,17 +51,11 @@ class RoleController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+    // public function show(string $id)
+    // {
+    //     //
+    // }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $role = $this->role->findById($id);
@@ -80,9 +65,6 @@ class RoleController extends Controller
         return view('admins.pages.roles.edit', compact('role', 'permissionGroups', 'roleHasPermissions'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateRoleRequest $request, string $id)
     {
         try {
@@ -102,9 +84,6 @@ class RoleController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $this->role->destroy($id);
