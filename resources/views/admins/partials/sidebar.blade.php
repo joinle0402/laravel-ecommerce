@@ -51,7 +51,10 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white " href="./pages/rtl.html">
+                <a @class([
+                    'nav-link text-white',
+                    'active bg-gradient-primary' => request()->routeIs('admin.categories.*'),
+                ]) href="{{ route('admin.categories.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <span class="material-icons opacity-10">
                             format_list_bulleted

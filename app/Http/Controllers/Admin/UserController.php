@@ -21,27 +21,18 @@ class UserController extends Controller
         $this->role = $role;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $users = $this->user->latest('id')->paginate(5);
         return view('admins.pages.users.index', compact('users'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $roleGroups = $this->role->all()->groupBy('group');
         return view('admins.pages.users.create', compact('roleGroups'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreUserRequest $request)
     {
         try {
@@ -67,17 +58,11 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $user = $this->user->findOrFail($id);
@@ -88,9 +73,6 @@ class UserController extends Controller
         return view('admins.pages.users.edit', compact('user', 'roleGroups', 'userHasRoles', 'image'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateUserRequest $request, string $id)
     {
         try {
@@ -128,9 +110,6 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         try {

@@ -20,21 +20,30 @@
                         @method('PUT')
 
                         <div class="mb-3">
-                            <label class="form-label text-dark text-bold" for="NameInput">Name:</label>
-                            <input type="text" value="{{ old('name') ?? $role->name }}"
-                                class="form-control px-2 border border-dark text-dark" id="NameInput" name="name">
+                            <label class="form-label text-dark text-bold" for="name">Name:</label>
+                            <input type="text" value="{{ old('name') ?? $role->name }}" @class([
+                                'form-control px-2',
+                                'is-invalid border-danger' => $errors->has('name'),
+                                'is-valid border-success' => !$errors->has('name') && old('name'),
+                            ])
+                                style="border: 1px solid #000;" id="name" name="name" />
                             @error('name')
-                                <span class="text-danger">{{ $message }}</span>
+                                <span class="invalid-feedback text-danger">{{ $message }}</span>
                             @enderror
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label text-dark text-bold" for="display_name">Display Name:</label>
                             <input type="text" value="{{ old('display_name') ?? $role->display_name }}"
-                                class="form-control px-2 border border-dark text-dark" id="display_name"
-                                placeholder="name@example.com" name="display_name">
+                                @class([
+                                    'form-control px-2',
+                                    'is-invalid border-danger' => $errors->has('display_name'),
+                                    'is-valid border-success' =>
+                                        !$errors->has('display_name') && old('display_name'),
+                                ]) style="border: 1px solid #000;" id="display_name"
+                                name="display_name" />
                             @error('display_name')
-                                <span class="text-danger">{{ $message }}</span>
+                                <span class="invalid-feedback text-danger">{{ $message }}</span>
                             @enderror
                         </div>
 

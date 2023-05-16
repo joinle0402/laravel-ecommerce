@@ -1,7 +1,7 @@
 @extends('admins.layout.app')
 
 @section('title')
-    Role list
+    Category list
 @endsection
 
 @section('content')
@@ -10,7 +10,6 @@
             <div class="row">
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show text-white text-center" role="alert">
-                        <i class="fas fa-check-circle me-2"></i>
                         {{ session('success') }}
                         <button type="button" class="btn-close d-flex items-center justify-center" data-bs-dismiss="alert"
                             aria-label="Close">
@@ -19,13 +18,23 @@
                     </div>
                 @endif
 
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show text-white text-center" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close d-flex items-center justify-center" data-bs-dismiss="alert"
+                            aria-label="Close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                @endif
+
                 <div class="col-sm">
-                    <h2>Role list</h2>
+                    <h2>Category list</h2>
                 </div>
                 <div class="col-sm d-flex justify-content-end">
-                    <a href="{{ route('admin.roles.create') }}" class="btn btn-info active" role="button"
+                    <a href="{{ route('admin.categories.create') }}" class="btn btn-info active" role="button"
                         aria-pressed="true">
-                        Add Role
+                        Add Category
                     </a>
                 </div>
             </div>
@@ -38,46 +47,31 @@
                                 <thead>
                                     <tr>
                                         <th
-                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            #
-                                        </th>
-                                        <th
-                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            class="text-left px-3 text-uppercase text-secondary text-sm font-bold opacity-7">
                                             Name
                                         </th>
                                         <th
-                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Display Name
-                                        </th>
-                                        <th
-                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Group
-                                        </th>
-                                        <th
-                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            class="text-center text-uppercase text-secondary text-sm font-bold opacity-7 ps-2">
                                             Action
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if ($roles->total())
-                                        @foreach ($roles as $index => $role)
+                                    @if (!empty($categoryTree))
+                                        @foreach ($categoryTree as $index => $categoryTreeItem)
                                             <tr>
-                                                <td class="text-bold text-center">{{ $index + 1 }}</td>
-                                                <td class="text-center">{{ $role->name }}</td>
-                                                <td class="text-center">{{ $role->display_name }}</td>
-                                                <td class="text-center">{{ $role->group }}</td>
+                                                <td class="text-left px-3">{{ $categoryTreeItem['name'] }}</td>
                                                 <td class="d-flex gap-2 justify-content-center">
-                                                    <a href="{{ route('admin.roles.edit', $role->id) }}"
+                                                    <a href="{{ route('admin.categories.edit', $categoryTreeItem['id']) }}"
                                                         class="btn btn-warning" role="button"
                                                         aria-pressed="true">Update</a>
                                                     <form method="POST"
-                                                        action="{{ route('admin.roles.destroy', $role->id) }}"
-                                                        id="delete-form-{{ $role->id }}">
+                                                        action="{{ route('admin.categories.destroy', $categoryTreeItem['id']) }}"
+                                                        id="delete-form-{{ $categoryTreeItem['id'] }}">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="button" class="btn btn-danger"
-                                                            onclick="confirmDelete({{ $role->id }})">Delete</button>
+                                                            onclick="confirmDelete({{ $categoryTreeItem['id'] }})">Delete</button>
                                                     </form>
                                                 </td>
                                             </tr>
@@ -90,9 +84,6 @@
 
                                 </tbody>
                             </table>
-                            <div class="px-3">
-                                {{ $roles->links() }}
-                            </div>
                         </div>
                     </div>
                 </div>
